@@ -8,6 +8,10 @@
   "parserOptions": {
     "ecmaVersion": "latest"
   },
+  "globals": {
+    "__filename": "readonly",
+    "__dirname": "readonly",
+    "Sequelize": true
+  },
   "rules": {}
 }
-// .eslintrc.js
