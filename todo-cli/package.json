@@ -1,10 +1,12 @@
 {
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "eslint": "^8.55.0",
     "husky": "^8.0.3",
     "jest": "^29.7.0",
     "lint-staged": "^15.2.0",
-    "prettier": "^3.1.0"
+    "prettier": "^3.1.0",
+    "sequelize-cli": "^6.6.2"
   },
   "lint-staged": {
     "*.js": [
@@ -137,6 +139,7 @@
     "micromatch": "^4.0.5",
     "mimic-fn": "^2.1.0",
     "minimatch": "^3.1.2",
+    "minimist": "^1.2.8",
     "ms": "^2.1.2",
     "natural-compare": "^1.4.0",
     "node-int64": "^0.4.0",
@@ -153,6 +156,8 @@
     "path-is-absolute": "^1.0.1",
     "path-key": "^3.1.1",
     "path-parse": "^1.0.7",
+    "pg": "^8.11.3",
+    "pg-hstore": "^2.3.4",
     "picocolors": "^1.0.0",
     "picomatch": "^2.3.1",
     "pirates": "^4.0.6",
@@ -167,6 +172,7 @@
     "resolve-from": "^5.0.0",
     "resolve.exports": "^2.0.2",
     "semver": "^6.3.1",
+    "sequelize": "^6.35.1",
     "shebang-command": "^2.0.0",
     "shebang-regex": "^3.0.0",
     "signal-exit": "^3.0.7",
@@ -205,9 +211,15 @@
     "yocto-queue": "^0.1.0"
   },
   "scripts": {
-    "test": "jest",
-    "prepare": "cd .. && husky install todo-cli/.husky"
+    "db:create:test": "npx sequelize-cli db:create --env test",
+    "pretest": "npx sequelize-cli db:drop --env test && npx sequelize-cli db:create --env test",
+    "test": "cross-env NODE_ENV=test jest --config jest.config.js --detectOpenHandles",
+    "prepare": "husky install"
   },
+  "jest": {
+    "testEnvironment": "node"
+  },
+  
   "author": "",
   "license": "ISC",
   "description": ""
