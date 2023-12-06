@@ -31,7 +31,6 @@ module.exports = (sequelize, DataTypes) => {
           dueDate: {
             $lt: new Date(),
           },
-          completed: false,
         },
       });
 
@@ -45,14 +44,13 @@ module.exports = (sequelize, DataTypes) => {
     static async dueToday() {
       const data = await Todo.findAll({
         where: {
-          dueDate: new Date(),
+          dueDate: sequelize.fn("CURDATE"),
         },
       });
 
       return data.map((item, index) => {
-        const isoDateString = item.dueDate.toISOString().split("T")[0];
         const status = item.completed ? "[x]" : "[ ]";
-        return `${index + 1}. ${status} ${item.title} ${isoDateString}`;
+        return `${index + 1}. ${status} ${item.title}`;
       });
     }
 
@@ -86,9 +84,15 @@ module.exports = (sequelize, DataTypes) => {
 
     displayableString() {
       let checkbox = this.completed ? "[x]" : "[ ]";
-      return `${this.id}. ${checkbox} ${this.title} ${this.dueDate}`;
+      let dateInfo =
+        this.completed || this.dueDate > new Date()
+          ? ` ${this.dueDate.toISOString().split("T")[0]}`
+          : "";
+      return `${this.id}. ${checkbox} ${this.title}${dateInfo}`;
     }
   }
+
+  // ... (previous code)
 
   Todo.init(
     {
@@ -100,7 +104,7 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: "Todo",
     },
-  );
+  ); // Closing parenthesis was missing here
 
   return Todo;
 };
