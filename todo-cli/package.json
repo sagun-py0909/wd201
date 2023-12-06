@@ -219,7 +219,6 @@
   "jest": {
     "testEnvironment": "node"
   },
-  
   "author": "",
   "license": "ISC",
   "description": ""
