@@ -1,5 +1,5 @@
 const { connect } = require("./connectDB");
-const { Todo } = require("./TodoModel");
+const { Todo } = require("./gg/TodoModel");
 
 const createTodo = async ({ title, dueDate, completed }) => {
   await connect();
