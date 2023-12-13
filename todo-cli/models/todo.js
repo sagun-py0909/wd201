@@ -72,6 +72,9 @@ module.exports = (sequelize, DataTypes) => {
       for (const task of data) {
         let checkbox = task.completed ? "[x]" : "[ ]";
         let dueDate = task.completed ? "" : ` ${task.dueDate}`;
+        if (task.dueDate === new Date()) {
+          result += `${task.id}. ${checkbox} ${task.title}\n`;
+        }
         result += `${task.id}. ${checkbox} ${task.title}${dueDate}\n`;
       }
       return result;
