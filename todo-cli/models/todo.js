@@ -16,26 +16,26 @@ module.exports = (sequelize, DataTypes) => {
       console.log("My Todo list \n");
 
       console.log("Overdue");
-      const overdueitems = await Todo.overdue();
-      let todolist1 = overdueitems
-        .map((todos) => todos.displayableString())
+      const overdueItems = await Todo.overdue();
+      let todolist1 = overdueItems
+        .map((todo) => todo.displayableString())
         .join("\n");
       console.log(todolist1);
       console.log("\n");
 
       console.log("Due Today");
-      const duetodayItems = await Todo.dueToday();
-      let todolist2 = duetodayItems
-        .map((todos) => todos.displayableString())
+      const dueTodayItems = await Todo.dueToday();
+      let todolist2 = dueTodayItems
+        .map((todo) => todo.displayableString())
         .join("\n");
       console.log(todolist2);
 
       console.log("\n");
 
       console.log("Due Later");
-      const duelaterItems = await Todo.dueLater();
-      let todolist3 = duelaterItems
-        .map((todos) => todos.displayableString())
+      const dueLaterItems = await Todo.dueLater();
+      let todolist3 = dueLaterItems
+        .map((todo) => todo.displayableString())
         .join("\n");
       console.log(todolist3);
     }
@@ -83,18 +83,25 @@ module.exports = (sequelize, DataTypes) => {
     displayableString() {
       let result = "";
 
-      if (this.completed && this.dueDate < new Date()) {
-        result += `${this.id}. [x] ${this.title} ${this.dueDate}\n`;
+      const dueDate = new Date(this.dueDate);
+
+      if (
+        (dueDate < new Date() && this.completed) ||
+        (dueDate > new Date() && !this.completed) ||
+        dueDate.toDateString() === new Date().toDateString()
+      ) {
+        const check = this.completed ? "[x]" : "[ ]";
+        result = `${this.id}. ${check} ${this.title}`;
       } else {
-        let checkbox = this.completed ? "[x]" : "[ ]";
-        let dueDate = this.completed ? "" : ` ${this.dueDate}`;
-        result += `${this.id}. ${checkbox} ${this.title}${dueDate}\n`;
+        const check = this.completed ? "[x]" : "[ ]";
+        result = `${this.id}. ${check} ${this.title} ${
+          dueDate.toISOString().split("T")[0]
+        }`;
       }
 
       return result;
     }
   }
-
   Todo.init(
     {
       title: DataTypes.STRING,
