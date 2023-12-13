@@ -51,7 +51,7 @@ module.exports = (sequelize, DataTypes) => {
       const data = await this.findAll({
         where: {
           dueDate: {
-            [Op.gt]: tomorrow,
+            [Op.gt]: new Date(),
           },
         },
       });
@@ -71,7 +71,8 @@ module.exports = (sequelize, DataTypes) => {
       let result = "";
       for (const task of data) {
         let checkbox = task.completed ? "[x]" : "[ ]";
-        result += `${task.id}. ${checkbox} ${task.title} ${task.dueDate}\n`;
+        let dueDate = task.completed ? "" : ` ${task.dueDate}`;
+        result += `${task.id}. ${checkbox} ${task.title}${dueDate}\n`;
       }
       return result;
     }
