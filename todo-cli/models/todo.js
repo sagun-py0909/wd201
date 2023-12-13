@@ -85,23 +85,27 @@ module.exports = (sequelize, DataTypes) => {
 
       const dueDate = new Date(this.dueDate);
 
-      if (
-        (dueDate < new Date() && this.completed) ||
-        (dueDate > new Date() && !this.completed) ||
-        dueDate.toDateString() === new Date().toDateString()
-      ) {
+      if (dueDate.toDateString() === new Date().toDateString()) {
         const check = this.completed ? "[x]" : "[ ]";
         result = `${this.id}. ${check} ${this.title}`;
       } else {
-        const check = this.completed ? "[x]" : "[ ]";
-        result = `${this.id}. ${check} ${this.title} ${
-          dueDate.toISOString().split("T")[0]
-        }`;
+        if (dueDate > new Date() && !this.completed) {
+          const check = this.completed ? "[x]" : "[ ]";
+          result = `${this.id}. ${check} ${this.title} ${
+            dueDate.toISOString().split("T")[0]
+          }`;
+        } else {
+          const check = this.completed ? "[x]" : "[ ]";
+          result = `${this.id}. ${check} ${this.title} ${
+            dueDate.toISOString().split("T")[0]
+          }`;
+        }
       }
 
       return result;
     }
   }
+
   Todo.init(
     {
       title: DataTypes.STRING,
