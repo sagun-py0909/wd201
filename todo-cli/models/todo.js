@@ -33,7 +33,6 @@ module.exports = (sequelize, DataTypes) => {
           dueDate: {
             [Op.lt]: new Date(),
           },
-          completed: false,
         },
       });
       console.log(this.displayableString(data));
@@ -51,8 +50,9 @@ module.exports = (sequelize, DataTypes) => {
     static async dueLater() {
       const data = await this.findAll({
         where: {
-          dueDate: tomorrow,
-          completed: false,
+          dueDate: {
+            [Op.gt]: tomorrow,
+          },
         },
       });
       console.log(this.displayableString(data));
