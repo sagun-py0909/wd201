@@ -16,15 +16,28 @@ module.exports = (sequelize, DataTypes) => {
       console.log("My Todo list \n");
 
       console.log("Overdue");
-      await this.overdue();
+      const overdueitems = await Todo.overdue();
+      let todolist1 = overdueitems
+        .map((todos) => todos.displayableString())
+        .join("\n");
+      console.log(todolist1);
       console.log("\n");
 
       console.log("Due Today");
-      await this.dueToday();
+      const duetodayItems = await Todo.dueToday();
+      let todolist2 = duetodayItems
+        .map((todos) => todos.displayableString())
+        .join("\n");
+      console.log(todolist2);
+
       console.log("\n");
 
       console.log("Due Later");
-      await this.dueLater();
+      const duelaterItems = await Todo.dueLater();
+      let todolist3 = duelaterItems
+        .map((todos) => todos.displayableString())
+        .join("\n");
+      console.log(todolist3);
     }
 
     static async overdue() {
@@ -35,7 +48,7 @@ module.exports = (sequelize, DataTypes) => {
           },
         },
       });
-      console.log(this.displayableString(data));
+      return data;
     }
 
     static async dueToday() {
@@ -44,7 +57,7 @@ module.exports = (sequelize, DataTypes) => {
           dueDate: new Date(),
         },
       });
-      console.log(this.displayableString(data));
+      return data;
     }
 
     static async dueLater() {
@@ -55,7 +68,7 @@ module.exports = (sequelize, DataTypes) => {
           },
         },
       });
-      console.log(this.displayableString(data));
+      return data;
     }
 
     static async markAsComplete(id) {
@@ -67,16 +80,16 @@ module.exports = (sequelize, DataTypes) => {
       }
     }
 
-    static displayableString(data) {
+    displayableString() {
       let result = "";
-      for (const task of data) {
-        let checkbox = task.completed ? "[x]" : "[ ]";
-        let dueDate = task.completed ? "" : ` ${task.dueDate}`;
-        if (task.dueDate === new Date()) {
-          result += `${task.id}. ${checkbox} ${task.title}\n`;
-        }
-        result += `${task.id}. ${checkbox} ${task.title}${dueDate}\n`;
+
+      let checkbox = this.completed ? "[x]" : "[ ]";
+      let dueDate = this.completed ? "" : ` ${this.dueDate}`;
+      if (this.dueDate === new Date()) {
+        result += `${this.id}. ${checkbox} ${this.title}\n`;
       }
+      result += `${this.id}. ${checkbox} ${this.title}${dueDate}\n`;
+
       return result;
     }
   }
