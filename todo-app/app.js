@@ -14,8 +14,8 @@ app.get("/todos", async (req, res) => {
   }
 });
 
-app.get("GET/todos", async (req, res) => {
-  const data = await Todo.getAllTods();
+app.get("/todos", async (req, res) => {
+  const data = await Todo.getAllTodos();
   res.status(201).json(data);
 });
 

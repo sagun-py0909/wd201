@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
 
-    static getAllTods() {
+    static getAllTodos() {
       return this.findAll();
     }
 
