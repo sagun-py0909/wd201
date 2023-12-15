@@ -15,7 +15,7 @@ app.post("/todos", async (req, res) => {
       title: req.body.title,
       dueDate: req.body.dueDate,
     });
-    res.status(201).json(newTodo);
+    res.send(newTodo);
   } catch (error) {
     console.error(error);
     res.status(422).json({ error: "Internal Server Error" });
