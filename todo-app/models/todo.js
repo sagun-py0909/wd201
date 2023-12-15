@@ -12,28 +12,16 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     static getAllTodos() {
-      return this.findAll();
+      const todos = this.findAll();
+      return todos;
     }
 
     static addTodo({ title, dueDate }) {
       return this.create({ title, dueDate: dueDate, completed: false });
     }
-    static markAsComplete(id) {
-      return this.update(
-        { completed: true },
-        {
-          where: { id: id },
-        }
-      );
+    markAsComplete() {
+      return this.update({ completed: true });
     }
-    static deleteTodo(id) {
-      return this.destroy({
-        where: {
-          id: id,
-        },
-      });
-    }
-    static showList() {}
   }
   Todo.init(
     {

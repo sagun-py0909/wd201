@@ -5,18 +5,8 @@ const { Todo } = require("./models");
 app.use(express.json());
 
 app.get("/todos", async (req, res) => {
-  try {
-    const data = Todo.getAllTodos;
-    res.status(201).json(data);
-  } catch (error) {
-    console.error(error);
-    res.status(422).json({ error: "Internal Server Error" });
-  }
-});
-
-app.get("/todos", async (req, res) => {
   const data = await Todo.getAllTodos();
-  res.status(201).json(data);
+  res.send(data);
 });
 
 app.post("/todos", async (req, res) => {
@@ -33,25 +23,27 @@ app.post("/todos", async (req, res) => {
 });
 
 app.put("/todos/:id/markAsComplete", async (req, res) => {
-  const todoId = req.params.id;
+  const todo = await Todo.findByPk(req.params.id);
   try {
-    const updateTodo = await Todo.markAsComplete(todoId);
-    return res.json(updateTodo);
+    const updateTodo = await todo.markAsComplete();
+    return res.send(updateTodo);
   } catch (error) {
     console.error(error);
     res.status(422).json({ error: "Internal Server Error" });
   }
 });
 
-app.post("/todos/delete/:id", async (req, res) => {
-  const id = req.params.id;
+app.delete("/todos/:id", async (req, res) => {
   try {
-    await Todo.deleteTodo(id);
-    return true;
+    const todo = await Todo.destroy({
+      where: {
+        id: req.params.id,
+      },
+    });
+    res.send(todo ? true : false);
   } catch (error) {
-    console.log("error occurred");
-    res.status(422).json({ error: "internal server error" });
-    return false
+    console.error(error);
+    res.status(422).json({ error: "Internal Server Error" });
   }
 });
 
