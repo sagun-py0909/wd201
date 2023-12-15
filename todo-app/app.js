@@ -26,7 +26,7 @@ app.put("/todos/:id/markAsComplete", async (req, res) => {
   const todo = await Todo.findByPk(req.params.id);
   try {
     const updateTodo = await todo.markAsComplete();
-    return res.send(updateTodo);
+    return res.json(updateTodo)
   } catch (error) {
     console.error(error);
     res.status(422).json({ error: "Internal Server Error" });
