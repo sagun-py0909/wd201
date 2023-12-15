@@ -1,0 +1,20 @@
+{
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es2021": true,
+    "node": true // Add this line
+  },
+  "extends": "eslint:recommended",
+  "parserOptions": {
+    "ecmaVersion": 2022
+  },
+  "globals": {
+    "__filename": "readonly",
+    "__dirname": "readonly",
+    "Sequelize": true
+  },
+  "rules": {
+    "no-console": "off"
+  }
+}
