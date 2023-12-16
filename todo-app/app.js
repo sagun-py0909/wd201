@@ -1,39 +1,56 @@
 const express = require("express");
 const app = express();
-const bodyParser = require("body-parser");
 const { Todo } = require("./models");
-app.use(express.json());
+const bodyParser = require("body-parser");
+app.use(bodyParser.json());
 
-app.get("/todos", async (req, res) => {
-  const data = await Todo.getAllTodos();
-  res.send(data);
+app.get("/", function (request, response) {
+  response.send("Hello World");
 });
 
-app.post("/todos", async (req, res) => {
+app.get("/todos", async function (_request, response) {
+  console.log("Processing list of all Todos ...");
+  // FILL IN YOUR CODE HERE
+
+  // First, we have to query our PostgerSQL database using Sequelize to get list of all Todos.
+  // Then, we have to respond with all Todos, like:
+  // response.send(todos)
+});
+
+app.get("/todos/:id", async function (request, response) {
   try {
-    const newTodo = await Todo.addTodo({
-      title: req.body.title,
-      dueDate: req.body.dueDate,
-    });
-    res.send(newTodo);
+    const todo = await Todo.findByPk(request.params.id);
+    return response.json(todo);
   } catch (error) {
-    console.error(error);
-    res.status(422).json({ error: "Internal Server Error" });
+    console.log(error);
+    return response.status(422).json(error);
   }
 });
 
-app.put("/todos/:id/markAsComplete", async (req, res) => {
-  const todo = await Todo.findByPk(req.params.id);
+app.post("/todos", async function (request, response) {
   try {
-    const updateTodo = await todo.markAsComplete();
-    return res.json(updateTodo)
+    const todo = await Todo.addTodo(request.body);
+    return response.json(todo);
   } catch (error) {
-    console.error(error);
-    res.status(422).json({ error: "Internal Server Error" });
+    console.log(error);
+    return response.status(422).json(error);
   }
 });
 
-app.delete("/todos/:id", async (req, res) => {
+app.put("/todos/:id/markAsCompleted", async function (request, response) {
+  const todo = await Todo.findByPk(request.params.id);
+  try {
+    const updatedTodo = await todo.markAsCompleted();
+    return response.json(updatedTodo);
+  } catch (error) {
+    console.log(error);
+    return response.status(422).json(error);
+  }
+});
+
+app.delete("/todos/:id", async function (request, response) {
+  console.log("We have to delete a Todo with ID: ", request.params.id);
+  // FILL IN YOUR CODE HERE
   try {
     const todo = await Todo.destroy({
       where: {
@@ -45,6 +62,9 @@ app.delete("/todos/:id", async (req, res) => {
     console.error(error);
     res.status(422).json({ error: "Internal Server Error" });
   }
+  // First, we have to query our database to delete a Todo by ID.
+  // Then, we have to respond back with true/false based on whether the Todo was deleted or not.
+  // response.send(true)
 });
 
 module.exports = app;
