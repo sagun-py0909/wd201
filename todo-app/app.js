@@ -8,24 +8,22 @@ app.get("/", function (request, response) {
   response.send("Hello World");
 });
 
-app.get("/todos", async function (_request, response) {
+app.get("/todos", async function (request, response) {
   console.log("Processing list of all Todos ...");
   // FILL IN YOUR CODE HERE
-
-  // First, we have to query our PostgerSQL database using Sequelize to get list of all Todos.
-  // Then, we have to respond with all Todos, like:
-  // response.send(todos)
-});
-
-app.get("/todos/:id", async function (request, response) {
   try {
-    const todo = await Todo.findByPk(request.params.id);
+    const todo = await Todo.findAll()
     return response.json(todo);
   } catch (error) {
     console.log(error);
     return response.status(422).json(error);
   }
+  // First, we have to query our PostgerSQL database using Sequelize to get list of all Todos.
+  // Then, we have to respond with all Todos, like:
+  // response.send(todos)
 });
+
+
 
 app.post("/todos", async function (request, response) {
   try {
@@ -54,13 +52,13 @@ app.delete("/todos/:id", async function (request, response) {
   try {
     const todo = await Todo.destroy({
       where: {
-        id: req.params.id,
+        id: request.params.id,
       },
     });
-    res.send(todo ? true : false);
+    response.send(todo ? true : false);
   } catch (error) {
     console.error(error);
-    res.status(422).json({ error: "Internal Server Error" });
+    response.status(422).json({ error: "Internal Server Error" });
   }
   // First, we have to query our database to delete a Todo by ID.
   // Then, we have to respond back with true/false based on whether the Todo was deleted or not.
