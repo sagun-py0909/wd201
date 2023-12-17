@@ -13,7 +13,12 @@ fs.readFile('home.html', (err, data) => {
     }
     home = data;
 });
-
+let x = 0;
+let i = 0;
+while(x!=10){
+    console.log(i);
+    i++;
+}
 fs.readFile('project.html', (err, data1) => {
     if (err) {
         throw err;
