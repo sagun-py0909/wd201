@@ -1,4 +1,14 @@
 body {
-    background-color: blueviolet;
-    font-family: Arial, Helvetica, sans-serif;
+    background-color: white;
+}
+table {
+    border-collapse: collapse;
+    width: 100%;
+    border: 2px solid black; /* Set the border for the entire table */
+}
+
+th, td {
+    border: 1px solid black; /* Set the border for table cells (th and td) */
+    padding: 8px;
+    text-align: left;
 }

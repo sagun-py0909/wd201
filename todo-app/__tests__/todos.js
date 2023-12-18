@@ -73,7 +73,7 @@ describe("Todo Application", function () {
 
   test("Deletes a todo with the given ID if it exists and sends a boolean response", async () => {
     await request(app).put("/todos/delete/1");
-    const todos = await db.Todo.getAllTods();
-    expect(todos.length).toBe(1);
+    const todos = await db.Todo.getAllTodos();
+    expect(todos.length).toBe(4);
   });
 });
