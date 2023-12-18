@@ -1,16 +1,17 @@
 <div>
   <h5>Overdue</h5>
-  <% let countOverDue = 0  %>
+  <% let OverdueIds = "" %>
   <% for( let index=0; index < allTodos.length; index++ ) { %>
     <% if (new Date(allTodos[index].dueDate) < new Date()) { %>
-      <% countOverDue = countOverDue + 1 %>
       <ul class="list-none">
         <li class="Todo-item">
           <div class="flex items-center w-fit my-2 px-2 py-1 rounded hover:bg-purple-50">
             <input id="todo-checkbox-1" type="checkbox"
             class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-100">
             <label for="todo-checkbox-1" class="ml-2 text-sm text-gray-600 cursor-pointer">
-              <%= allTodos[index].id %> <%= allTodos[index].title %>
+            <%= allTodos[index].title %>
+            <% OverdueIds += allTodos[index].id.toString() + " ";
+            %>
             </label>
             <a href="#" class="trash-icon hidden ml-2">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -25,17 +26,17 @@
       <% } %>
       <% } %>
       <li>
-        <%= countOverDue %>
+        <%= OverdueIds %>
       </li>
       
       
-      <% let countDueToday = 0  %>
       <div>
+        <% let DueTodayIDs = "" %>
         <h5>Due Today</h5>
         <% for (let index=0; index < allTodos.length; index++) { %>
           <% const dueDate=new Date(allTodos[index].dueDate); %>
           <% if (dueDate.toDateString()===new Date().toDateString()) { %>
-            <% countDueToday = countDueToday + 1 %>
+            <% DueTodayIDs += allTodos[index].id.toString() + " ";%>
             <ul class="list-none">
               <li class="Todo-item">
                 <div class="flex items-center w-fit my-2 px-2 py-1 rounded hover:bg-purple-50">
@@ -58,16 +59,17 @@
           <% } %>
           <% } %>
           <li>
-            <%= countDueToday %>
+            <% DueTodayIDs %>
           </li>
           
-          <% let countDueLater = 0  %>
-          <h5>Due Later</h5>
+          <h5>Due Later</h5>     
+             <% let dueLaterIds = "" %>
           <% for (let index=0; index < allTodos.length; index++) { %>
             <% const dueDate=new Date(allTodos[index].dueDate); %>
             <% if (dueDate> new Date() && dueDate.toDateString() !== new Date().toDateString())
             { %>
-              <% countDueLater = countDueLater + 1 %>
+              <% dueLaterIds += allTodos[index].id.toString() + " ";%>
+
               <ul class="list-none">
                 <li class="Todo-item">
                   <div
@@ -91,7 +93,7 @@
           <% } %>
           <% } %>
           <li>
-            <%= countDueLater %>
+            <% dueLaterIds %>
           </li>
         </div>
         
