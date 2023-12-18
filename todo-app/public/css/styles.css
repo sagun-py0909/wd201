@@ -12,3 +12,6 @@ th, td {
     padding: 8px;
     text-align: left;
 }
+.Todo-item:hover .trash-icon{
+    display: block;
+}
