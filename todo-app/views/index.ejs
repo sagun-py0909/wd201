@@ -8,21 +8,40 @@
   <link rel="stylesheet" href="./css/styles.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script>
+    function update(id) {
+      fetch(`/todos/${id}/markAsCompleted`, {
+        method: "put",
+        headers: {
+          "content-Type": "application/json"
+        }
+      }).then((res) => {
+        if (res.ok) {
+          window.location.reload()
+        }
 
+      })
+        .catch((err) => {
+          console.log(err)
+        })
+    }
+  </script>
 </head>
+
 
 <body>
   <div class="grid grid-cols-6">
     <div class="col-start-3 col-span-2 ">
       <%- include('header.ejs') %>
-        <form action="">
+        <form action="/todos" method="post">
           <div class="flex gap-2 p-4 ">
             <div class="flex-auto">
               <input type="text" placeholder="what's next?" required
-                class="border border-gray-300 rounded text-grey-900 w-full p-2 text-sm" />
+                class="border border-gray-300 rounded text-grey-900 w-full p-2 text-sm" name="title" />
             </div>
             <div class="flex-auto">
-              <input type="date" class="border border-gray-300 rounded text-grey-900 w-full p-2 text-sm leading-4" />
+              <input type="date" name="dueDate"
+                class="border border-gray-300 rounded text-grey-900 w-full p-2 text-sm leading-4" />
             </div>
             <div class="flex-none">
               <button type="submit" class="bg-green-600 text-white px-5 py-1.5 rounded font-medium ">Add</button>
