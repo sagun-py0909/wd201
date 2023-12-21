@@ -1,14 +1,19 @@
 const request = require("supertest");
-
+var cheerio = require("cheerio")
 const db = require("../models/index");
 const app = require("../app");
 
 let server, agent;
 
+function extractcsrf(res){
+  var $ = cheerio.load(res.text)
+  return $("[name=_csrf]").val()
+}
+
 describe("Todo Application", function () {
   beforeAll(async () => {
     await db.sequelize.sync({ force: true });
-    server = app.listen(3000, () => {});
+    server = app.listen(4000, () => {});
     agent = request.agent(server);
   });
 
@@ -22,16 +27,25 @@ describe("Todo Application", function () {
   });
 
   test("Creates a todo and responds with json at /todos POST endpoint", async () => {
+    const res = await agent.get("/")
+    const csrf = extractcsrf(res)
     const response = await agent.post("/todos").send({
       title: "Buy milk",
       dueDate: new Date().toISOString(),
       completed: false,
+      "_csrf" : csrf
     });
     expect(response.statusCode).toBe(302);
     
    
   });
 
+//   test("uses the change status function to mark as todo and its opposite" , async () =>{
+// app.put("/todos/:id/:status" , async function (request , response){
+//     const response = await agent.put("/todos/1/true")
+//     expect(response.statusCode).toBe(302)
+//   })
+//   })
   // test("Marks a todo with the given ID as complete", async () => {
   //   const response = await agent.post("/todos").send({
   //     title: "Buy milk",
@@ -73,4 +87,4 @@ describe("Todo Application", function () {
   //   const todos = await db.Todo.getAllTodos();
   //   expect(todos.length).toBe(2);
   // });
-});
+})

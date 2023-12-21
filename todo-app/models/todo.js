@@ -10,7 +10,17 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
+    
 
+
+    static  remove (id) {
+      const todo = Todo.destroy({
+        where: {
+          id: id,
+        },
+      });
+      return todo
+    }
     static getAllTodos() {
       const todos = this.findAll();
       return todos;
@@ -19,9 +29,17 @@ module.exports = (sequelize, DataTypes) => {
     static addTodo({ title, dueDate }) {
       return this.create({ title, dueDate: dueDate, completed: false });
     }
-    markAsCompleted() {
+    async statusChange(status){
+      return this.update({completed : !this.completed})
+    }
+    async markAsCompleted() {
       return this.update({ completed: true });
     }
+    
+    async markAsIncompleted() {
+      return this.update({ completed: false });
+    }
+    
   }
   Todo.init(
     {

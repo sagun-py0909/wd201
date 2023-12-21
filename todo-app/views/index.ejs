@@ -4,27 +4,83 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="<%= csrfToken %>">
   <title>Todo manager</title>
   <link rel="stylesheet" href="./css/styles.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <script>
-    function update(id) {
-      fetch(`/todos/${id}/markAsCompleted`, {
+    var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content")
+    function remove(id) {
+      fetch(`/todos/${id}`, {
+        method: "delete",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body:JSON.stringify({
+          "_csrf":token
+        })
+      })
+        .then((res) => {
+          if (res.ok) {
+            window.location.reload();
+          }
+        })
+        .catch((err) => {
+          console.log("Error:", err);
+        });
+    }
+
+    function setCompletionStatus(id, bool) {
+      console.log('Setting status for todo:', id, 'to', bool);
+
+      fetch(`/todos/${parseInt(id)}/${bool===true}`, {
         method: "put",
         headers: {
-          "content-Type": "application/json"
-        }
-      }).then((res) => {
-        if (res.ok) {
-          window.location.reload()
-        }
-
-      })
-        .catch((err) => {
-          console.log(err)
+          "Content-Type": "application/json"
+        },
+        body:JSON.stringify({
+          "_csrf":token
         })
+      })
+        .then((res) => {
+          if (res.ok) {
+            console.log('Todo updated successfully');
+            window.location.reload() // Update checkbox state based on server response
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
+
+
+
+    function update(id) {
+      fetch(`/todos/${parseInt(id)}`, {
+        method: "put",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body:JSON.stringify({
+          "_csrf":token
+        })
+      })
+        .then((res) => {
+          if (res.ok) {
+            window.location.reload();
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+
+
+
+
+
+
   </script>
 </head>
 
@@ -33,14 +89,16 @@
   <div class="grid grid-cols-6">
     <div class="col-start-3 col-span-2 ">
       <%- include('header.ejs') %>
-        <form action="/todos" method="post">
+        <form  action="/todos" method="post">
+
           <div class="flex gap-2 p-4 ">
             <div class="flex-auto">
               <input type="text" placeholder="what's next?" required
                 class="border border-gray-300 rounded text-grey-900 w-full p-2 text-sm" name="title" />
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             </div>
             <div class="flex-auto">
-              <input type="date" name="dueDate"
+              <input type="date" name="dueDate" required
                 class="border border-gray-300 rounded text-grey-900 w-full p-2 text-sm leading-4" />
             </div>
             <div class="flex-none">

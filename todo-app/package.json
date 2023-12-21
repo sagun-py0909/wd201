@@ -13,6 +13,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "csurf": "^1.11.0",
     "ejs": "^3.1.9",
     "express": "^4.18.2",
     "pg": "^8.11.3",
@@ -20,6 +22,7 @@
     "sequelize-cli": "^6.6.2"
   },
   "devDependencies": {
+    "cheerio": "^1.0.0-rc.12",
     "cross-env": "^7.0.3",
     "eslint": "^8.55.0",
     "husky": "^8.0.3",

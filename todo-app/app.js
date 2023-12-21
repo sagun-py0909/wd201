@@ -7,6 +7,11 @@ app.use(bodyParser.json());
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: false }));
+var csrf = require("csurf");
+var cookieParser = require("cookie-parser");
+app.use(cookieParser("something"))
+app.use(csrf({cookie : true}))
+
 // // app.js
 // const { Sequelize } = require('sequelize');
 
@@ -31,6 +36,7 @@ app.get("/", async (request, response) => {
   if (request.accepts("html")) {
     response.render("index", {
       allTodos,
+      csrfToken : request.csrfToken()
     });
   } else {
     response.json({ allTodos });
@@ -58,25 +64,59 @@ app.post("/todos", async function (request, response) {
   }
 });
 
-app.put("/todos/:id/markAsCompleted", async function (request, response) {
-  const todo = await Todo.findByPk(request.params.id);
+app.put("/todos/:id/markAsIncomplete", async function (request, response) {
   try {
+    const todo = await Todo.findByPk(request.params.id);
+
+    if (!todo) {
+      return response.status(404).json({ error: "Todo not found" });
+    }
+
+    const updatedTodo = await todo.markAsIncomplete();
+    return response.json(updatedTodo);
+  } catch (error) {
+    console.error("Error marking todo as incomplete:", error);
+    return response.status(422).json({ error: "Failed to mark todo as incomplete" });
+  }
+});
+
+app.put("/todos/:id", async function (request, response) {
+  try {
+    const todo = await Todo.findByPk(request.params.id);
+
+    if (!todo) {
+      return response.status(404).json({ error: "Todo not found" });
+    }
+
     const updatedTodo = await todo.markAsCompleted();
     return response.json(updatedTodo);
   } catch (error) {
-    console.log(error);
-    return response.status(422).json(error);
+    console.error("Error marking todo as completed:", error);
+    return response.status(422).json({ error: "Failed to mark todo as completed" });
   }
 });
+
+// Modify your server-side route to return the updated todo object
+app.put("/todos/:id/:status", async function (request, response) {
+  try {
+    const todo = await Todo.findByPk(request.params.id);
+    if (!todo) {
+      return response.status(404).json({ error: "Todo not found" });
+    }
+    const updatedTodo = await todo.statusChange(request.params.status);
+    console.log("done")
+    return response.json(updatedTodo); // Return the updated todo object
+  } catch (error) {
+    console.error("Error marking todo as completed:", error);
+    return response.status(422).json({ error: "Failed to mark todo as completed" });
+  }
+});
+
 
 app.delete("/todos/:id", async function (request, response) {
   console.log("We have to delete a Todo with ID: ", request.params.id);
   try {
-    const todo = await Todo.destroy({
-      where: {
-        id: request.params.id,
-      },
-    });
+    const todo = await Todo.remove(request.params.id)
     response.send(todo ? true : false);
   } catch (error) {
     console.error(error);
