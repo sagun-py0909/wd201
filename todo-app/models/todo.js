@@ -13,23 +13,31 @@ module.exports = (sequelize, DataTypes) => {
     
 
 
-    static  remove (id) {
-      const todo = Todo.destroy({
-        where: {
-          id: id,
-        },
-      });
-      return todo
+    static async remove(id) {
+      try {
+        const todo = await Todo.destroy({
+          where: {
+            id: id,
+          },
+        });
+        return todo > 0;
+      } catch (error) {
+        console.error(error);
+        throw error; 
+      }
     }
+    
     static getAllTodos() {
       const todos = this.findAll();
       return todos;
     }
 
     static addTodo({ title, dueDate }) {
-      return this.create({ title, dueDate: dueDate, completed: false });
+      const todo = this.create({ title, dueDate: dueDate, completed: false });
+      return todo
     }
     async statusChange(status){
+      console.log(this)
       return this.update({completed : !this.completed})
     }
     async markAsCompleted() {

@@ -44,7 +44,6 @@ app.get("/", async (request, response) => {
 });
 
 app.get("/todos", async function (request, response) {
-  console.log("Processing list of all Todos ...");
   try {
     const todo = await Todo.findAll();
     return response.json(todo);
@@ -57,7 +56,7 @@ app.get("/todos", async function (request, response) {
 app.post("/todos", async function (request, response) {
   try {
     const todo = await Todo.addTodo(request.body);
-    return response.redirect("/");
+    return response.redirect("/") , todo;
   } catch (error) {
     console.log(error);
     return response.status(422).json(error);
@@ -89,21 +88,20 @@ app.put("/todos/:id", async function (request, response) {
     }
 
     const updatedTodo = await todo.markAsCompleted();
-    return response.json(updatedTodo);
+    return response.sendStatus(200);
   } catch (error) {
     console.error("Error marking todo as completed:", error);
     return response.status(422).json({ error: "Failed to mark todo as completed" });
   }
 });
 
-// Modify your server-side route to return the updated todo object
-app.put("/todos/:id/:status", async function (request, response) {
+app.put("/todos/:id/:x", async function (request, response) {
   try {
     const todo = await Todo.findByPk(request.params.id);
     if (!todo) {
       return response.status(404).json({ error: "Todo not found" });
     }
-    const updatedTodo = await todo.statusChange(request.params.status);
+    const updatedTodo = await todo.statusChange(request.params.x);
     console.log("done")
     return response.json(updatedTodo); // Return the updated todo object
   } catch (error) {
@@ -116,12 +114,19 @@ app.put("/todos/:id/:status", async function (request, response) {
 app.delete("/todos/:id", async function (request, response) {
   console.log("We have to delete a Todo with ID: ", request.params.id);
   try {
-    const todo = await Todo.remove(request.params.id)
-    response.send(todo ? true : false);
+    const todo = await Todo.remove(request.params.id);
+
+    if (todo) {
+      response.sendStatus(200); 
+    } else {
+      response.status(422).json({ error: "Failed to delete the Todo" });
+    }
   } catch (error) {
     console.error(error);
     response.status(422).json({ error: "Internal Server Error" });
   }
 });
+
+
 
 module.exports = app;
