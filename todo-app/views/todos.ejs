@@ -22,7 +22,7 @@
                             <% const dueDate=new Date(allTodos[index].dueDate); %>
                               <% if (dueDate < new Date() && dueDate.toDateString() !==new Date().toDateString() && allTodos[index].completed === false) { %>
 
-                                <li class="Todo-item">
+                                <li class="Todo-Item">
                                   <div class="flex items-center w-fit my-2 px-2 py-1 rounded hover:bg-purple-50">
                                     <input id="todo-checkbox-<%= allTodos[index].id %>" type="checkbox"
                                       <%=allTodos[index].completed ? 'checked' : '' %>
@@ -59,7 +59,7 @@
                               <% const dueDate=new Date(allTodos[index].dueDate); %>
                                 <% const currentDate=new Date(); %>
                                   <% if (dueDate.toDateString()===currentDate.toDateString() && allTodos[index].completed === false) { %>
-                                    <li class="Todo-item">
+                                    <li class="Todo-Item">
                                       <div class="flex items-center w-fit my-2 px-2 py-1 rounded hover:bg-purple-50">
                                         <input id="todo-checkbox-<%= allTodos[index].id %>" type="checkbox"
                                           <%=allTodos[index].completed ? 'checked' : '' %>
@@ -103,7 +103,7 @@
                                   Date().toDateString() && allTodos[index].completed === false)
                                   { %>
 
-                                  <li class="Todo-item">
+                                  <li class="Todo-Item">
                                     <div class="flex items-center w-fit my-2 px-2 py-1 rounded hover:bg-purple-50">
                                       <input id="todo-checkbox-<%= allTodos[index].id %>" type="checkbox"
                                         <%=allTodos[index].completed ? 'checked' : '' %>
@@ -141,7 +141,7 @@
                                 <% if (allTodos[index].completed === true)
                                   { %>
 
-                                  <li class="Todo-item">
+                                  <li class="Todo-Item">
                                     <div class="flex items-center w-fit my-2 px-2 py-1 rounded hover:bg-purple-50">
                                       <input id="todo-checkbox-<%= allTodos[index].id %>" type="checkbox"
                                         <%=allTodos[index].completed ? 'checked' : '' %>
