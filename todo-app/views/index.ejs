@@ -9,104 +9,15 @@
   <link rel="stylesheet" href="./css/styles.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <script>
-    var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content")
-    function remove(id) {
-      fetch(`/todos/${id}`, {
-        method: "delete",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body:JSON.stringify({
-          "_csrf":token
-        })
-      })
-        .then((res) => {
-          if (res.ok) {
-            window.location.reload();
-          }
-        })
-        .catch((err) => {
-          console.log("Error:", err);
-        });
-    }
-
-    function setCompletionStatus(id, bool) {
-      console.log('Setting status for todo:', id, 'to', bool);
-
-      fetch(`/todos/${parseInt(id)}/${bool===true}`, {
-        method: "put",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body:JSON.stringify({
-          "_csrf":token
-        })
-      })
-        .then((res) => {
-          if (res.ok) {
-            console.log('Todo updated successfully');
-            window.location.reload() // Update checkbox state based on server response
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-
-
-
-    function update(id) {
-      fetch(`/todos/${parseInt(id)}`, {
-        method: "put",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body:JSON.stringify({
-          "_csrf":token
-        })
-      })
-        .then((res) => {
-          if (res.ok) {
-            window.location.reload();
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-
-
-
-
-
-
-  </script>
 </head>
-
 
 <body>
   <div class="grid grid-cols-6">
     <div class="col-start-3 col-span-2 ">
+      <h1 class="py-2">welcome to TODO manager</h1>
+      <p class="py-2">Not a user? <a href="/signup" class="text-green-600">signup</a></p>
+      <p class="py-2">already a user? <a href="/login" class="text-green-600">login</a></p>
       <%- include('header.ejs') %>
-        <form  action="/todos" method="post">
-
-          <div class="flex gap-2 p-4 ">
-            <div class="flex-auto">
-              <input type="text" placeholder="what's next?" required
-                class="border border-gray-300 rounded text-grey-900 w-full p-2 text-sm" name="title" />
-              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-            </div>
-            <div class="flex-auto">
-              <input type="date" name="dueDate" required
-                class="border border-gray-300 rounded text-grey-900 w-full p-2 text-sm leading-4" />
-            </div>
-            <div class="flex-none">
-              <button type="submit" class="bg-green-600 text-white px-5 py-1.5 rounded font-medium ">Add</button>
-            </div>
-          </div>
-        </form>
-        <%- include('todos.ejs') %>
     </div>
   </div>
   </div>

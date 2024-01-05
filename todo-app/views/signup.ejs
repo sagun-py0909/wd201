@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Todo manager</title>
+  <meta name="csrf-token" content="<%= csrfToken %>">
+  <link rel="stylesheet" href="/css/styles.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="grid grid-cols-6">
+    <div class="col-start-3 col-span-2 ">
+      <%- include('header.ejs') %>
+        <h1 class="py-4">Sign up as a new user!!</h1>
+        <form action="/users" method="post">
+          <div class="py-3">
+            <label for="firstName">First Name</label>
+            <input required type="text" name="firstName"
+              class="border border-gray-300 text-gray-900 rounded p-2 w-full">
+          </div>
+          <div class="py-3">
+            <label for="lastName">Last Name</label>
+            <input required type="text" name="lastName"
+              class="border border-gray-300 text-gray-900 rounded p-2 w-full ">
+          </div>
+          <div class="py-3">
+            <label for="email">Email</label>
+            <input required type="email" name="email"
+              class="border border-gray-300 text-gray-900 rounded p-2 text-gray-900 w-full rounded p-2">
+            <input required type="hidden" name="_csrf" value="<%= csrfToken %>">
+          </div>
+
+          <div class="py-3">
+            <label for="password">Password</label>
+            <input required type="password" name="password"
+              class="border border-gray-300 text-gray-900 rounded p-2 w-full">
+          </div>
+          <div class="py-3">
+            <button type="submit"
+              class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-5 py-2">signup</button>
+          </div>
+        </form>
+    </div>
+  </div>
+</body>
+
+</html>

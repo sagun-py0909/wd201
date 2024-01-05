@@ -1,5 +1,6 @@
 "use strict";
 const { Model, where } = require("sequelize");
+const user = require("./user");
 module.exports = (sequelize, DataTypes) => {
   class Todo extends Model {
     /**
@@ -9,6 +10,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Todo.belongsTo(models.User , {
+        foreignKey:'userId'
+      })
     }
     
 
@@ -27,13 +31,22 @@ module.exports = (sequelize, DataTypes) => {
       }
     }
     
-    static getAllTodos() {
-      const todos = this.findAll();
-      return todos;
+    static async getAllTodos(userId) {
+      try {
+        const todos = await this.findAll({
+          where: {
+            userId: userId,
+          },
+        });
+        return todos;
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
     }
 
-    static addTodo({ title, dueDate }) {
-      const todo = this.create({ title, dueDate: dueDate, completed: false });
+    static addTodo({ title, dueDate, userId }) {
+      const todo = this.create({ title, dueDate: dueDate, completed: false , userId});
       return todo
     }
     async statusChange(status){
@@ -54,6 +67,7 @@ module.exports = (sequelize, DataTypes) => {
       title: DataTypes.STRING,
       dueDate: DataTypes.DATEONLY,
       completed: DataTypes.BOOLEAN,
+      userId:DataTypes.INTEGER,
     },
     {
       sequelize,
