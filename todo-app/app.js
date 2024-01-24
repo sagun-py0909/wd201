@@ -3,6 +3,7 @@ const app = express();
 const { Todo, User } = require("./models");
 const bodyParser = require("body-parser");
 const path = require("path");
+app.set("views", path.join(__dirname, "views"));
 app.use(bodyParser.json());
 const passport = require("passport");
 const connectEnsureLogin = require("connect-ensure-login");
@@ -10,7 +11,8 @@ const session = require("express-session");
 const localStrategy = require("passport-local");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
-
+const flash = require("connect-flash");
+app.use(flash());
 app.use(
   session({
     secret: "helloworld0992766237857235",
@@ -19,7 +21,10 @@ app.use(
     },
   })
 );
-
+app.use(function (request, response, next) {
+  response.locals.messages = request.flash();
+  next();
+});
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(
@@ -30,25 +35,16 @@ passport.use(
     },
     async (username, password, done) => {
       try {
-        const user = await User.findOne({
-          where: {
-            email: username,
-          },
-        });
-
-        if (!user) {
-          return done(null, false, { message: "Invalid User" });
-        }
-
+        const user = await User.findOne({ where: { email: username } });
         const result = await bcrypt.compare(password, user.password);
 
         if (result) {
           return done(null, user);
         } else {
-          return done(null, false, { message: "Invalid Password" });
+          return done(null, false, { message: "Invalid password" });
         }
-      } catch (err) {
-        return done(err);
+      } catch (error) {
+        return done(error);
       }
     }
   )
@@ -93,8 +89,6 @@ app.use(csrf({ cookie: true }));
 // // Call the function to initialize models
 // initializeModels()
 
-// ... rest of your Express app setup
-
 app.get("/", async (request, response) => {
   if (request.accepts("html")) {
     response.render("index", {
@@ -107,7 +101,7 @@ app.get(
   "/todo",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
-    const user = request.user; 
+    const user = request.user;
     const allTodos = await Todo.getAllTodos(user.id);
     if (request.accepts("html")) {
       response.render("todo", {
@@ -161,7 +155,10 @@ app.get(
 
 app.post(
   "/session",
-  passport.authenticate("local", { failureRedirect: "/login" }),
+  passport.authenticate("local", {
+    failureRedirect: "/login",
+    failureFlash: true,
+  }),
   (request, response) => {
     response.redirect("/todo");
   }
@@ -172,10 +169,15 @@ app.post(
   connectEnsureLogin.ensureLoggedIn(),
   async function (request, response) {
     try {
+      const { title, dueDate } = request.body;
+      if (!title || !dueDate) {
+        request.flash("error", "title and dueDate cannot be empty");
+        return response.redirect("/todo");
+      }
       console.log(request.user.id);
       const todo = await Todo.addTodo({
-        title: request.body.title,
-        dueDate: request.body.dueDate,
+        title: title,
+        dueDate: dueDate,
         userId: request.user.id,
       });
       return response.redirect("/todo"), todo;
@@ -188,13 +190,17 @@ app.post(
 
 app.post("/users", async (request, response) => {
   const securePass = await bcrypt.hash(request.body.password, saltRounds);
-
+  const { firstName, lastName, email, password } = request.body;
+  if (!firstName || !email || !password) {
+    request.flash("error", "Enter the details");
+    return response.redirect("/signup");
+  }
   try {
     console.log("creating");
     const user = await User.create({
-      firstName: request.body.firstName,
-      lastName: request.body.lastName,
-      email: request.body.email,
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
       password: securePass,
     });
     console.log(securePass);
@@ -206,7 +212,8 @@ app.post("/users", async (request, response) => {
     });
   } catch (error) {
     console.log(error);
-    return response.status(422).json(error);
+    request.flash("error", "Enter the details");
+    return response.redirect("/signup").status(422).json(error);
   }
 });
 

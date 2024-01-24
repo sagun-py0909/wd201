@@ -51,7 +51,7 @@ module.exports = (sequelize, DataTypes) => {
     }
     async statusChange(status){
       console.log(this)
-      return this.update({completed : !this.completed})
+      return await this.update({completed : !this.completed})
     }
     async markAsCompleted() {
       return this.update({ completed: true });

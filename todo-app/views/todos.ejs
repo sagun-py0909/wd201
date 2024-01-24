@@ -30,9 +30,6 @@
                                         allTodos[index].completed %>)"
                                         class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-100"
                                         />
-
-
-
                                         <label for="todo-checkbox-<%= allTodos[index].id %>"
                                           class="ml-2 text-sm text-gray-600 cursor-pointer">
                                           <%= allTodos[index].title %>
@@ -67,11 +64,6 @@
                                             allTodos[index].completed %>)"
                                             class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-100"
                                             />
-
-
-
-
-
                                             <label for="todo-checkbox-<%= allTodos[index].id %>"
                                               class="ml-2 text-sm text-gray-600 cursor-pointer">
                                               <%= allTodos[index].title %>
@@ -89,12 +81,10 @@
                                     <% } %>
                                       <% } %>
                           </ul>
-
                           <h5>Due Later - <span class="bg-gray-100 " id="count-due-later">
                               <%=Lcount %>
                             </span></h5>
                           <ul class="list-none">
-
                             <% for (let index=0; index < allTodos.length; index++) { %>
                               <% const dueDate=new Date(allTodos[index].dueDate); %>
                                 <% if (dueDate> new Date() && dueDate.toDateString()
@@ -102,7 +92,6 @@
                                   new
                                   Date().toDateString() && allTodos[index].completed === false)
                                   { %>
-
                                   <li class="Todo-Item">
                                     <div class="flex items-center w-fit my-2 px-2 py-1 rounded hover:bg-purple-50">
                                       <input id="todo-checkbox-<%= allTodos[index].id %>" type="checkbox"
@@ -111,9 +100,6 @@
                                           allTodos[index].completed %>)"
                                           class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-100"
                                           />
-
-
-
                                           <label for="todo-checkbox-<%= allTodos[index].id %>"
                                             class="ml-2 text-sm text-gray-600 cursor-pointer">
                                             <%= allTodos[index].title %>
@@ -135,12 +121,10 @@
                             <%=Ccount %>
                           </span></h5>
                           <ul class="list-none">
-
                             <% for (let index=0; index < allTodos.length; index++) { %>
                               <% const dueDate=new Date(allTodos[index].dueDate); %>
                                 <% if (allTodos[index].completed === true)
                                   { %>
-
                                   <li class="Todo-Item">
                                     <div class="flex items-center w-fit my-2 px-2 py-1 rounded hover:bg-purple-50">
                                       <input id="todo-checkbox-<%= allTodos[index].id %>" type="checkbox"
@@ -149,8 +133,6 @@
                                           allTodos[index].completed %>)"
                                           class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-100"
                                           />
-
-
                                           <label for="todo-checkbox-<%= allTodos[index].id %>"
                                             class="ml-2 text-sm text-gray-600 cursor-pointer">
                                             <s><%= allTodos[index].title %></s>
@@ -168,6 +150,4 @@
                                   <% } %>
                                     <% } %>
                           </ul>
-                          
-
                         </div>

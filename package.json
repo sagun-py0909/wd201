@@ -1,5 +1,8 @@
 {
   "dependencies": {
     "lint-staged": "^15.2.0"
+  },
+  "devDependencies": {
+    "supertest": "^6.3.3"
   }
 }
