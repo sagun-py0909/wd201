@@ -36,6 +36,9 @@ passport.use(
     async (username, password, done) => {
       try {
         const user = await User.findOne({ where: { email: username } });
+        if(!user){
+          return done(null, false, { message: "Invalid email" });
+        }
         const result = await bcrypt.compare(password, user.password);
 
         if (result) {
@@ -98,7 +101,7 @@ app.get("/", async (request, response) => {
 });
 
 app.get(
-  "/todo",
+  "/todos",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     const user = request.user;
@@ -140,7 +143,7 @@ app.get(
 );
 
 app.get(
-  "/todos",
+  "/todo",
   connectEnsureLogin.ensureLoggedIn(),
   async function (request, response) {
     try {
@@ -160,7 +163,7 @@ app.post(
     failureFlash: true,
   }),
   (request, response) => {
-    response.redirect("/todo");
+    response.redirect("/todos");
   }
 );
 
@@ -172,7 +175,7 @@ app.post(
       const { title, dueDate } = request.body;
       if (!title || !dueDate) {
         request.flash("error", "title and dueDate cannot be empty");
-        return response.redirect("/todo");
+        return response.redirect("/todos");
       }
       console.log(request.user.id);
       const todo = await Todo.addTodo({
@@ -180,7 +183,7 @@ app.post(
         dueDate: dueDate,
         userId: request.user.id,
       });
-      return response.redirect("/todo"), todo;
+      return response.redirect("/todos"), todo;
     } catch (error) {
       console.log(error);
       return response.status(422).json(error);
@@ -193,6 +196,11 @@ app.post("/users", async (request, response) => {
   const { firstName, lastName, email, password } = request.body;
   if (!firstName || !email || !password) {
     request.flash("error", "Enter the details");
+    return response.redirect("/signup");
+  }
+  const data = await User.findOne({where:{email:email}})
+  if(data){
+    request.flash("error", "email already exists");
     return response.redirect("/signup");
   }
   try {
@@ -208,7 +216,7 @@ app.post("/users", async (request, response) => {
       if (err) {
         console.log(err);
       }
-      response.redirect("/todo");
+      response.redirect("/todos");
     });
   } catch (error) {
     console.log(error);
